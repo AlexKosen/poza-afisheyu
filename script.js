@@ -2,6 +2,12 @@
   const views = [...document.querySelectorAll('[data-view]')];
   const nav = document.querySelector('.primary-nav');
   const menu = document.querySelector('.menu-toggle');
+  const navSections = {
+    home: 'home', about: 'about', theaters: 'theaters', 'theater-dykyi': 'theaters',
+    publications: 'publications', 'article-metod': 'publications', 'article-interview': 'publications',
+    'article-lekoc': 'publications', 'article-book': 'publications', 'article-sector': 'publications',
+    contacts: 'contacts'
+  };
 
   const articles = {
     'article-sector': 'sector',
@@ -105,6 +111,13 @@
       const visible = view === active;
       view.classList.toggle('active', visible);
       view.setAttribute('aria-hidden', String(!visible));
+    });
+    const currentSection = navSections[active.dataset.view] || 'home';
+    nav.querySelectorAll('a[href^="#"]').forEach((link) => {
+      const isCurrent = link.getAttribute('href') === `#${currentSection}`;
+      link.classList.toggle('is-current', isCurrent);
+      if (isCurrent) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
     });
     document.title = active.dataset.view === 'home'
       ? 'Поза афішею — незалежний театр Києва'
