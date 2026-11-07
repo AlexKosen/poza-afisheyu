@@ -92,6 +92,7 @@
     }
     const related = [...content.querySelectorAll('.related-card')];
     content.replaceChildren();
+    let interviewTurn = 0;
     for (const [index, rawText] of paragraphs.slice(1).entries()) {
       const value = rawText.trim();
       if (!value) continue;
@@ -127,9 +128,12 @@
       }
       if (key === 'sector' && sourceSection) continue;
       const paragraph = document.createElement('p');
-      if (value.startsWith('––')) {
-        paragraph.className = 'interview-turn';
+      if (key === 'interview' && value.startsWith('––')) {
+        const isQuestion = interviewTurn % 2 === 0;
+        paragraph.className = `interview-turn ${isQuestion ? 'interview-question' : 'interview-answer'}`;
+        paragraph.dataset.speaker = isQuestion ? 'Запитання' : 'Відповідь';
         paragraph.textContent = value.replace(/^––\s*/, '');
+        interviewTurn += 1;
       } else if (key === 'interview' && index === 0 && value.startsWith('Фото')) {
         paragraph.className = 'photo-credit';
         paragraph.textContent = value;
@@ -144,7 +148,7 @@
   const interviewView = document.createElement('div');
   interviewView.className = 'view article-view';
   interviewView.dataset.view = 'article-interview';
-  interviewView.innerHTML = '<article class="article"><a class="back-link" href="#publications">← Усі публікації</a><p class="eyebrow">Інтерв’ю · 2026</p><h1></h1><p class="article-deck">Розмова про акторську роботу, режисуру, виставу «21» і незалежні театральні ініціативи.</p><div class="article-cover cover-blue"><span>ПА / 05</span><b>РОЗМОВА</b><small>ІНТЕРВ’Ю · 2026</small></div><div class="article-gallery single-photo" aria-label="Фотографії до статті"><figure><img src="assets/photos/kateryna-vyshneva.jpg" alt="Портрет Катерини (Вишні) Вишневої." loading="lazy"></figure></div><div class="article-content"></div></article></div>';
+  interviewView.innerHTML = '<article class="article interview-article"><a class="back-link" href="#publications">← Усі публікації</a><p class="eyebrow">Інтерв’ю · 2026</p><h1></h1><p class="article-deck">Розмова про акторську роботу, режисуру, виставу «21» і незалежні театральні ініціативи.</p><div class="article-cover cover-blue"><span>ПА / 05</span><b>РОЗМОВА</b><small>ІНТЕРВ’Ю · 2026</small></div><div class="article-gallery single-photo" aria-label="Фотографії до статті"><figure><img src="assets/photos/kateryna-vyshneva.jpg" alt="Портрет Катерини (Вишні) Вишневої." loading="lazy"></figure></div><div class="article-content"></div></article></div>';
   document.querySelector('main').append(interviewView);
   views.push(interviewView);
   Object.entries(articles).forEach(([viewName, key]) => {
