@@ -16,6 +16,8 @@
 .interview-article .article-content{max-width:680px;margin:0 auto}
 .interview-article .article-content .interview-turn{border-left:2px solid #b74438;padding:14px 18px;margin:0 0 18px;line-height:1.8;text-align:left}
 .interview-article .article-content .interview-turn::before{content:attr(data-speaker);display:block;margin:0 0 7px;font:700 9px/1.3 var(--sans);letter-spacing:.13em;text-transform:uppercase;color:#9b3c32}
+.interview-article .article-content .interview-turn p{margin:0 0 .75em}
+.interview-article .article-content .interview-turn p:last-child{margin-bottom:0}
 .interview-article .article-content .interview-question{background:#e9e4da;color:var(--ink);font-family:var(--serif);font-size:16px}
 .interview-article .article-content .interview-answer{background:transparent;color:#56524c;font-family:var(--sans);font-size:15px}
 @media(max-width:600px){.interview-article .article-content{max-width:none;margin:0}.interview-article .article-content .interview-turn{padding:13px 14px;font-size:14px;line-height:1.75}.interview-article .article-content .interview-question{font-size:15px}}

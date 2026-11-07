@@ -93,6 +93,7 @@
     const related = [...content.querySelectorAll('.related-card')];
     content.replaceChildren();
     let interviewTurn = 0;
+    let currentInterviewBlock = null;
     for (const [index, rawText] of paragraphs.slice(1).entries()) {
       const value = rawText.trim();
       if (!value) continue;
@@ -130,15 +131,23 @@
       const paragraph = document.createElement('p');
       if (key === 'interview' && value.startsWith('––')) {
         const isQuestion = interviewTurn % 2 === 0;
-        paragraph.className = `interview-turn ${isQuestion ? 'interview-question' : 'interview-answer'}`;
-        paragraph.dataset.speaker = isQuestion ? 'Запитання' : 'Відповідь';
+        currentInterviewBlock = document.createElement('div');
+        currentInterviewBlock.className = `interview-turn ${isQuestion ? 'interview-question' : 'interview-answer'}`;
+        currentInterviewBlock.dataset.speaker = isQuestion ? 'Запитання' : 'Відповідь';
         paragraph.textContent = value.replace(/^––\s*/, '');
+        currentInterviewBlock.append(paragraph);
+        content.append(currentInterviewBlock);
         interviewTurn += 1;
+        continue;
       } else if (key === 'interview' && index === 0 && value.startsWith('Фото')) {
         paragraph.className = 'photo-credit';
         paragraph.textContent = value;
       } else {
         paragraph.textContent = value;
+      }
+      if (key === 'interview' && interviewTurn > 0 && currentInterviewBlock?.classList.contains('interview-answer')) {
+        currentInterviewBlock.append(paragraph);
+        continue;
       }
       content.append(paragraph);
     }
