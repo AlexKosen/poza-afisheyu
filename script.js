@@ -24,6 +24,41 @@
     const title = paragraphs[0];
     article.querySelector('h1').textContent = title;
     const content = article.querySelector('.article-content');
+    let sourceSection = false;
+    const sources = [
+      ['Суспільне Культура', [
+        ['Перформативний сектор – найтоксичніший в Україні? Про що говорили незалежні театри з Києва, Львова, Харкова та Луцька', 'https://suspilne.media/culture/1402828-performativnij-sektor-najtoksicnisij-v-ukraini-pro-so-govorili-nezalezni-teatri-z-kieva-lvova-harkova-ta-lucka/'],
+        ['Чи існує дефіцит акторів-чоловіків, або Як театри долають кадрову кризу', 'https://suspilne.media/culture/1362238-ci-isnue-deficit-aktoriv-colovikiv-abo-ak-teatri-dolaut-kadrovu-krizu/'],
+        ['Нові формати подій: як у Києві адаптовують культурні заходи через дронові атаки Росії', 'https://suspilne.media/culture/1397546-novi-formati-podij-ak-u-kievi-adaptuut-kulturni-zahodi-cerez-dronovi-ataki/']
+      ]],
+      ['Міністерство культури України', [
+        ['Збільшення фінансування культурної сфери на +45%: Верховна Рада прийняла бюджет 2026', 'https://mincult.gov.ua/news/zbilshennya-finansuvannya-kulturnoyi-sfery-na-45-verhovna-rada-pryjnyala-byudzhet-2026/']
+      ]],
+      ['Український культурний фонд', [
+        ['«Запит до Фонду на гранти приблизно у шість разів перевищує можливості щодо підтримки у 2026 році», – Анастасія Образцова', 'https://ucf.in.ua/news/nadvelykyi_zapyt']
+      ]],
+      ['Державне агентство України з питань мистецтв та мистецької освіти', [
+        ['Нова хвиля грантової програми Per Forma', 'https://arts.gov.ua/announcments/nova-hvylya-grantovoyi-programy-per-forma/']
+      ]],
+      ['Київська міська влада', [
+        ['Рекомендації щодо проведення масових, культурних та розважальних заходів у разі встановлення жовтого рівня загрози', 'https://kyivcity.gov.ua/bezpeka_ta_pravoporiadok/vazhlyve_pid_chas_voiennoho_stanu/rekomendatsi_schodo_roboti_v_umovakh_zagroz/schodo_mekhanizmu_provedennya_masovikh__kulturnikh_ta_rozvazhalnikh_zakhodiv__u_razi_vstanovlennya_zhovtogo_rivnya_zagrozi/']
+      ]],
+      ['Детектор медіа', [
+        ['Дослідження Мінкульту «Культура в Україні»: вимірюючи сонячне світло', 'https://detector.media/infospace/article/250366/2026-06-09-doslidzhennya-minkultu-kultura-v-ukraini-vymiryuyuchy-sonyachne-svitlo/']
+      ]],
+      ['Український інститут', [
+        ['Українські митці та продюсери на фестивалі Sirenos у Вільнюсі', 'https://ui.org.ua/sectors/ukrayinski-mytczi-ta-prodyusery-na-festyvali-sirenos-u-vilnyusi/']
+      ]],
+      ['LB.ua', [
+        ['«Пекельна хоругва», «Депеш мод», «Набукко»: осінні прем’єри в театрах України', 'https://lb.ua/culture/2026/09/20/767108_pekelna_horugva_depesh_mod.html']
+      ]],
+      ['Люк', [
+        ['«Блакитна вистава»: театр «Нафта» досліджує досвід дому під час війни', 'https://lyuk.media/news/blue-performance/']
+      ]],
+      ['Суспільне Луцьк', [
+        ['«Про потребу триматися попри все»: у Луцьку показали виставу «Кімната Левчанівської»', 'https://suspilne.media/lutsk/1428589-pro-potrebu-trimatisa-popri-vse-u-lucku-pokazali-vistavu-kimnata-levcanivskoi/']
+      ]]
+    ];
     const photoSets = {
       metod: [
         ['assets/photos/metod-1.jpg', 'Сценічний кадр із вистави «Метод 46».'],
@@ -64,8 +99,32 @@
         heading.className = 'source-heading';
         heading.textContent = value;
         content.append(heading);
+        if (key === 'sector') {
+          const list = document.createElement('ul');
+          list.className = 'sources-list';
+          for (const [publisher, entries] of sources) {
+            const item = document.createElement('li');
+            const name = document.createElement('strong');
+            name.textContent = `${publisher}. `;
+            item.append(name);
+            entries.forEach(([label, url], index) => {
+              if (index) item.append(document.createTextNode('; '));
+              const link = document.createElement('a');
+              link.href = url;
+              link.target = '_blank';
+              link.rel = 'noopener noreferrer';
+              link.textContent = label;
+              item.append(link);
+            });
+            item.append(document.createTextNode('.'));
+            list.append(item);
+          }
+          content.append(list);
+          sourceSection = true;
+        }
         continue;
       }
+      if (key === 'sector' && sourceSection) continue;
       const paragraph = document.createElement('p');
       if (value.startsWith('––')) {
         paragraph.className = 'interview-turn';

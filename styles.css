@@ -8,6 +8,10 @@
 .article-content .photo-credit{font-size:11px;color:#857e73;font-style:italic;margin-top:-38px;margin-bottom:42px}
 .article-content .interview-turn{border-left:2px solid #c9c1b4;padding-left:18px;margin-top:1.8em}
 .article-content .source-heading{font:26px var(--serif);font-weight:500;margin:3em 0 1em;color:var(--ink)}
+.article-content .sources-list{padding-left:1.2em;margin:0 0 2.5em;font-size:13px;line-height:1.75}
+.article-content .sources-list li{padding-left:.35em;margin:0 0 1em}
+.article-content .sources-list a{color:#8e3128;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;overflow-wrap:anywhere}
+.article-content .sources-list a:hover{color:#bd4033}
 .article-content .related-card{margin-top:40px}
 .article-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 52px}
 .article-gallery figure{margin:0;min-width:0}
