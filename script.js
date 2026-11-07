@@ -69,12 +69,16 @@
         ['assets/photos/naboka-1.jpg', 'Микола Набока під час лекції про педагогіку Жака Лекока.'],
         ['assets/photos/naboka-2.jpg', 'Учасники слухають лекцію про театр і рух.'],
         ['assets/photos/naboka-3.jpg', 'Схема з лекційної презентації.']
+      ],
+      interview: [
+        ['assets/photos/kateryna-vyshneva.jpg', 'Портрет Катерини (Вишні) Вишневої.']
       ]
     };
     const photos = photoSets[key];
     if (photos) {
       const gallery = document.createElement('div');
       gallery.className = 'article-gallery';
+      if (photos.length === 1) gallery.classList.add('single-photo');
       gallery.setAttribute('aria-label', 'Фотографії до статті');
       for (const [src, caption] of photos) {
         const figure = document.createElement('figure');
