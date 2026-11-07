@@ -176,6 +176,30 @@
   const reviewListing = document.querySelector('[data-view="publications"] .pub-group .pub-row b');
   if (reviewListing) reviewListing.textContent = window.ARTICLE_CONTENT?.metod?.[0] || reviewListing.textContent;
 
+  const arrowNodes = [];
+  const arrowWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  while (arrowWalker.nextNode()) {
+    if (arrowWalker.currentNode.nodeValue.includes('↗')) arrowNodes.push(arrowWalker.currentNode);
+  }
+  arrowNodes.forEach((node) => {
+    const parts = node.nodeValue.split('↗');
+    const fragment = document.createDocumentFragment();
+    parts.forEach((part, index) => {
+      if (part) fragment.append(document.createTextNode(part));
+      if (index < parts.length - 1) {
+        const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        icon.setAttribute('class', 'external-icon');
+        icon.setAttribute('viewBox', '0 0 16 16');
+        icon.setAttribute('aria-hidden', 'true');
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', 'M8 3h5v5M13 3 6 10M11 8v5H3V5h5');
+        icon.append(path);
+        fragment.append(icon);
+      }
+    });
+    node.parentNode.replaceChild(fragment, node);
+  });
+
   function showRoute() {
     const route = location.hash.replace(/^#/, '') || 'home';
     const target = views.find((view) => view.dataset.view === route);
