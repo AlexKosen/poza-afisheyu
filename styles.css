@@ -13,6 +13,8 @@
 .article-content .sources-list a{color:#8e3128;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;overflow-wrap:anywhere}
 .article-content .sources-list a:hover{color:#bd4033}
 .article-content .related-card{margin-top:40px}
+.article-content .article-source a{color:#8e3128;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;overflow-wrap:anywhere}
+.article-content .article-source a:hover{color:#bd4033}
 .external-icon{display:inline-block;width:.9em;height:.9em;vertical-align:-.12em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
 .interview-article .article-content{max-width:680px;margin:0 auto}
 .interview-article .article-content .interview-turn{border-left:2px solid #b74438;padding:14px 18px;margin:0 0 18px;line-height:1.8;text-align:left}

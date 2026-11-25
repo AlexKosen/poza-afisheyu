@@ -16,9 +16,15 @@
     'article-lekoc': 'naboka',
     'article-book': 'book'
   };
+  const extraArticles = window.EXTRA_ARTICLES || [];
+  extraArticles.forEach((item) => {
+    articles[item.id] = item.key;
+    navSections[item.id] = 'publications';
+  });
 
   function addArticleText(view, key) {
-    const paragraphs = window.ARTICLE_CONTENT?.[key];
+    const extraArticle = extraArticles.find((item) => item.key === key);
+    const paragraphs = window.ARTICLE_CONTENT?.[key] || extraArticle?.content;
     const article = view.querySelector('.article');
     if (!paragraphs?.length || !article) return;
     const title = paragraphs[0];
@@ -71,7 +77,7 @@
         ['assets/photos/naboka-3.jpg', 'Схема з лекційної презентації.']
       ],
     };
-    const photos = photoSets[key];
+    const photos = photoSets[key] || extraArticle?.photos;
     if (photos) {
       const gallery = document.createElement('div');
       gallery.className = 'article-gallery';
@@ -102,6 +108,7 @@
         heading.className = 'source-heading';
         heading.textContent = value;
         content.append(heading);
+        sourceSection = true;
         if (key === 'sector') {
           const list = document.createElement('ul');
           list.className = 'sources-list';
@@ -123,18 +130,18 @@
             list.append(item);
           }
           content.append(list);
-          sourceSection = true;
         }
         continue;
       }
       if (key === 'sector' && sourceSection) continue;
       const paragraph = document.createElement('p');
-      if (key === 'interview' && value.startsWith('––')) {
+      const isInterview = key === 'interview' || extraArticle?.kind === 'Інтерв’ю';
+      if (isInterview && /^–{1,2}\s*/.test(value)) {
         const isQuestion = interviewTurn % 2 === 0;
         currentInterviewBlock = document.createElement('div');
         currentInterviewBlock.className = `interview-turn ${isQuestion ? 'interview-question' : 'interview-answer'}`;
         currentInterviewBlock.dataset.speaker = isQuestion ? 'Запитання' : 'Відповідь';
-        paragraph.textContent = value.replace(/^––\s*/, '');
+        paragraph.textContent = value.replace(/^–{1,2}\s*/, '');
         currentInterviewBlock.append(paragraph);
         content.append(currentInterviewBlock);
         interviewTurn += 1;
@@ -145,9 +152,30 @@
       } else {
         paragraph.textContent = value;
       }
-      if (key === 'interview' && interviewTurn > 0 && currentInterviewBlock?.classList.contains('interview-answer')) {
+      if (isInterview && interviewTurn > 0 && currentInterviewBlock?.classList.contains('interview-answer')) {
         currentInterviewBlock.append(paragraph);
         continue;
+      }
+      const linkedParts = extraArticle?.links?.[value];
+      if (linkedParts?.length) {
+        paragraph.replaceChildren();
+        paragraph.className = sourceSection ? 'article-source' : '';
+        let cursor = 0;
+        for (const part of linkedParts) {
+          const index = value.indexOf(part.text, cursor);
+          if (index < 0) continue;
+          if (index > cursor) paragraph.append(document.createTextNode(value.slice(cursor, index)));
+          const link = document.createElement('a');
+          link.href = part.href;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = part.href.includes('spotify.com') && value.trim() === part.text
+            ? 'Слухати аудіовистави у Spotify'
+            : part.text;
+          paragraph.append(link);
+          cursor = index + part.text.length;
+        }
+        if (cursor < value.length) paragraph.append(document.createTextNode(value.slice(cursor)));
       }
       content.append(paragraph);
     }
@@ -160,6 +188,41 @@
   interviewView.innerHTML = '<article class="article interview-article"><a class="back-link" href="#publications">← Усі публікації</a><p class="eyebrow">Інтерв’ю · 2026</p><h1></h1><p class="article-deck">Розмова про акторську роботу, режисуру, виставу «21» і незалежні театральні ініціативи.</p><div class="article-cover cover-blue"><span>ПА / 05</span><b>РОЗМОВА</b><small>ІНТЕРВ’Ю · 2026</small></div><div class="article-gallery single-photo" aria-label="Фотографії до статті"><figure><img src="assets/photos/kateryna-vyshneva.jpg" alt="Портрет Катерини (Вишні) Вишневої." loading="lazy"></figure></div><div class="article-content"></div></article></div>';
   document.querySelector('main').append(interviewView);
   views.push(interviewView);
+  for (const item of extraArticles) {
+    const view = document.createElement('div');
+    view.className = 'view article-view';
+    view.dataset.view = item.id;
+    const article = document.createElement('article');
+    article.className = item.kind === 'Інтерв’ю' ? 'article interview-article' : 'article';
+    const back = document.createElement('a');
+    back.className = 'back-link';
+    back.href = '#publications';
+    back.textContent = '← Усі публікації';
+    const eyebrow = document.createElement('p');
+    eyebrow.className = 'eyebrow';
+    eyebrow.textContent = item.eyebrow;
+    const title = document.createElement('h1');
+    title.textContent = item.content[0];
+    const deck = document.createElement('p');
+    deck.className = 'article-deck';
+    deck.textContent = item.deck;
+    const cover = document.createElement('div');
+    cover.className = `article-cover ${item.cover}`;
+    const coverIndex = document.createElement('span');
+    coverIndex.textContent = `ПА / ${String(5 + extraArticles.indexOf(item) + 1).padStart(2, '0')}`;
+    const coverWord = document.createElement('b');
+    coverWord.textContent = item.coverWord;
+    const coverNote = document.createElement('small');
+    coverNote.textContent = item.coverNote;
+    cover.append(coverIndex, coverWord, coverNote);
+    cover.setAttribute('aria-hidden', 'true');
+    const content = document.createElement('div');
+    content.className = 'article-content';
+    article.append(back, eyebrow, title, deck, cover, content);
+    view.append(article);
+    document.querySelector('main').append(view);
+    views.push(view);
+  }
   Object.entries(articles).forEach(([viewName, key]) => {
     const view = views.find((item) => item.dataset.view === viewName);
     if (view) addArticleText(view, key);
@@ -168,6 +231,30 @@
     .find((group) => group.querySelector('h2')?.textContent.trim() === 'Інтерв’ю — скоро');
   if (interviewGroup) {
     interviewGroup.innerHTML = '<h2>Інтерв’ю</h2><a class="pub-row" href="#article-interview"><span class="pub-kind">Інтерв’ю</span><span><b>Інтерв’ю з Катериною (Вишнею) Вишневою</b><small>Про акторську роботу, режисуру та виставу «21».</small></span><span class="row-arrow">↗</span></a>';
+  }
+  for (const item of extraArticles) {
+    const group = [...document.querySelectorAll('.pub-group')].find((candidate) =>
+      candidate.querySelector('h2')?.textContent.replace(/\s*[—–-]\s*скоро\s*$/i, '').trim() === item.section
+    );
+    if (!group) continue;
+    group.querySelectorAll('.quiet-note').forEach((note) => note.remove());
+    const row = document.createElement('a');
+    row.className = 'pub-row';
+    row.href = `#${item.id}`;
+    const kind = document.createElement('span');
+    kind.className = 'pub-kind';
+    kind.textContent = item.kind;
+    const description = document.createElement('span');
+    const heading = document.createElement('b');
+    heading.textContent = item.content[0];
+    const summary = document.createElement('small');
+    summary.textContent = item.deck;
+    description.append(heading, summary);
+    const arrow = document.createElement('span');
+    arrow.className = 'row-arrow';
+    arrow.textContent = '↗';
+    row.append(kind, description, arrow);
+    group.append(row);
   }
   const mainReview = document.querySelector('.feature-main h3');
   if (mainReview) mainReview.textContent = window.ARTICLE_CONTENT?.metod?.[0] || mainReview.textContent;
