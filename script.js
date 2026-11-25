@@ -83,7 +83,8 @@
       gallery.className = 'article-gallery';
       if (photos.length === 1) gallery.classList.add('single-photo');
       gallery.setAttribute('aria-label', 'Фотографії до статті');
-      for (const [src, caption] of photos) {
+      for (const photo of photos) {
+        const [src, caption] = Array.isArray(photo) ? photo : [photo.src, photo.caption];
         const figure = document.createElement('figure');
         const image = document.createElement('img');
         image.src = src;
