@@ -33,3 +33,5 @@
 @media(max-width:600px){.article-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.article-gallery img{height:170px}.article-gallery:not(.single-photo) figure:last-child:nth-child(odd){grid-column:1/-1}.article-gallery:not(.single-photo) figure:last-child:nth-child(odd) img{height:210px}.article-gallery.single-photo{grid-template-columns:minmax(0,1fr)}.article-gallery.single-photo img{height:auto;max-height:560px}}
 .primary-nav a.is-current{color:var(--ink);font-weight:700;text-decoration:underline;text-decoration-color:var(--red);text-decoration-thickness:2px;text-underline-offset:8px}
 .primary-nav a:focus-visible{outline:2px solid var(--red);outline-offset:5px}
+
+.article-cover.cover-kateryna{container-type:inline-size}.article-cover.cover-kateryna b{font-size:13cqw;line-height:.88;letter-spacing:-.07em;white-space:nowrap}

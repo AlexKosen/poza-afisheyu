@@ -209,6 +209,7 @@
     deck.textContent = item.deck;
     const cover = document.createElement('div');
     cover.className = `article-cover ${item.cover}`;
+    if (item.id === 'article-portrait-kateryna') cover.classList.add('cover-kateryna');
     const coverIndex = document.createElement('span');
     coverIndex.textContent = `ПА / ${String(5 + extraArticles.indexOf(item) + 1).padStart(2, '0')}`;
     const coverWord = document.createElement('b');
